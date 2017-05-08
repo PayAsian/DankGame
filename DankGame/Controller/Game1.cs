@@ -1,10 +1,11 @@
-﻿using System;
-
+﻿
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
+using DankGame.Model;
 
-namespace DankGame
+namespace DankGame.Controller
 {
 	/// <summary>
 	/// This is the main type for your game.
@@ -13,6 +14,21 @@ namespace DankGame
 	{
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
+
+		// Represents the player 
+		private Player player;
+
+// Keyboard states used to determine key presses
+KeyboardState currentKeyboardState;
+KeyboardState previousKeyboardState;
+
+// Gamepad states used to determine button presses
+GamePadState currentGamePadState;
+GamePadState previousGamePadState;
+
+// A movement speed for the player
+float playerMoveSpeed;
+
 
 		public Game1()
 		{
@@ -30,6 +46,9 @@ namespace DankGame
 		{
 			// TODO: Add your initialization logic here
 
+			// Initialize the player class
+			player = new Player();
+
 			base.Initialize();
 		}
 
@@ -41,6 +60,11 @@ namespace DankGame
 		{
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch(GraphicsDevice);
+
+			// Load the player resources 
+			Vector2 playerPosition = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
+
+			player.Initialize(Content.Load<Texture2D>("Texture/Penguin"), playerPosition);
 
 			//TODO: use this.Content to load your game content here 
 		}
@@ -73,6 +97,13 @@ namespace DankGame
 			graphics.GraphicsDevice.Clear(Color.Teal);
 
 			//TODO: Add your drawing code here
+
+			// Start drawing
+			spriteBatch.Begin(); 
+			// Draw the Player 
+			player.Draw(spriteBatch); 
+			// Stop drawing 
+			spriteBatch.End();
 
 			base.Draw(gameTime);
 		}
