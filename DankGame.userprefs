@@ -1,9 +1,8 @@
 ﻿<Properties StartupConfiguration="{479B81C7-93F3-4A31-A5CA-80E772F28CFF}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="DankGame/Controller/Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="DankGame/Model/Player.cs">
     <Files>
-      <File FileName="DankGame/Controller/Game1.cs" Line="18" Column="11" />
-      <File FileName="DankGame/Model/Player.cs" Line="8" Column="21" />
-      <File FileName="DankGame/Controller/Program.cs" Line="14" Column="30" />
+      <File FileName="DankGame/Controller/Game1.cs" Line="65" Column="4" />
+      <File FileName="DankGame/Model/Player.cs" Line="3" Column="40" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
