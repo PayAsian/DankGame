@@ -29,6 +29,12 @@ namespace DankGame.Controller
 		// A movement speed for the player
 		private float playerMoveSpeed;
 
+		// Image used to display the static background
+		private Texture2D mainBackground;
+
+		// Parallaxing Layers
+		private ParallaxingBackground bgLayer1;
+		private ParallaxingBackground bgLayer2;
 
 
 
@@ -36,37 +42,40 @@ namespace DankGame.Controller
 		{
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
+			bgLayer1 = new ParallaxingBackground();
+			bgLayer2 = new ParallaxingBackground();
+
 		}
 
-private void UpdatePlayer(GameTime gameTime)
-{
+		private void UpdatePlayer(GameTime gameTime)
+		{
 
-	// Get Thumbstick Controls
-	player.Position.X += currentGamePadState.ThumbSticks.Left.X * playerMoveSpeed;
-	player.Position.Y -= currentGamePadState.ThumbSticks.Left.Y * playerMoveSpeed;
+			// Get Thumbstick Controls
+			player.Position.X += currentGamePadState.ThumbSticks.Left.X * playerMoveSpeed;
+			player.Position.Y -= currentGamePadState.ThumbSticks.Left.Y * playerMoveSpeed;
 
-	// Use the Keyboard / Dpad
-	if (currentKeyboardState.IsKeyDown(Keys.Left) || currentGamePadState.DPad.Left == ButtonState.Pressed)
-	{
-		player.Position.X -= playerMoveSpeed;
-	}
-	if (currentKeyboardState.IsKeyDown(Keys.Right) || currentGamePadState.DPad.Right == ButtonState.Pressed)
-	{
-		player.Position.X += playerMoveSpeed;
-	}
-	if (currentKeyboardState.IsKeyDown(Keys.Up) || currentGamePadState.DPad.Up == ButtonState.Pressed)
-	{
-		player.Position.Y -= playerMoveSpeed;
-	}
-	if (currentKeyboardState.IsKeyDown(Keys.Down) || currentGamePadState.DPad.Down == ButtonState.Pressed)
-	{
-		player.Position.Y += playerMoveSpeed;
-	}
+			// Use the Keyboard / Dpad
+			if (currentKeyboardState.IsKeyDown(Keys.Left) || currentGamePadState.DPad.Left == ButtonState.Pressed)
+			{
+				player.Position.X -= playerMoveSpeed;
+			}
+			if (currentKeyboardState.IsKeyDown(Keys.Right) || currentGamePadState.DPad.Right == ButtonState.Pressed)
+			{
+				player.Position.X += playerMoveSpeed;
+			}
+			if (currentKeyboardState.IsKeyDown(Keys.Up) || currentGamePadState.DPad.Up == ButtonState.Pressed)
+			{
+				player.Position.Y -= playerMoveSpeed;
+			}
+			if (currentKeyboardState.IsKeyDown(Keys.Down) || currentGamePadState.DPad.Down == ButtonState.Pressed)
+			{
+				player.Position.Y += playerMoveSpeed;
+			}
 
-	// Make sure that the player does not go out of bounds
-	player.Position.X = MathHelper.Clamp(player.Position.X, 0, GraphicsDevice.Viewport.Width - player.Width);
-	player.Position.Y = MathHelper.Clamp(player.Position.Y, 0, GraphicsDevice.Viewport.Height - player.Height);
-}
+			// Make sure that the player does not go out of bounds
+			player.Position.X = MathHelper.Clamp(player.Position.X, 0, GraphicsDevice.Viewport.Width - player.Width);
+			player.Position.Y = MathHelper.Clamp(player.Position.Y, 0, GraphicsDevice.Viewport.Height - player.Height);
+		}
 
 		/// <summary>
 		/// Allows the game to perform any initialization it needs to before starting to run.
@@ -101,6 +110,13 @@ private void UpdatePlayer(GameTime gameTime)
 
 			player.Initialize(Content.Load<Texture2D>("Texture/Penguin"), playerPosition);
 
+			// Load the parallaxing background
+			bgLayer1.Initialize(Content, "Texture/bgLayer1", GraphicsDevice.Viewport.Width, -1);
+			bgLayer2.Initialize(Content, "Texture/bgLayer2", GraphicsDevice.Viewport.Width, -2);
+
+			mainBackground = Content.Load<Texture2D>("Texture/PixelSky");
+
+
 			//TODO: use this.Content to load your game content here 
 		}
 
@@ -129,6 +145,10 @@ private void UpdatePlayer(GameTime gameTime)
 			//Update the player
 			UpdatePlayer(gameTime);
 
+			// Update the parallaxing background
+			bgLayer1.Update();
+			bgLayer2.Update();
+
 			// TODO: Add your update logic here
 
 			base.Update(gameTime);
@@ -145,9 +165,16 @@ private void UpdatePlayer(GameTime gameTime)
 			//TODO: Add your drawing code here
 
 			// Start drawing
-			spriteBatch.Begin(); 
+			spriteBatch.Begin();
+
+			spriteBatch.Draw(mainBackground, Vector2.Zero, Color.White);
+
+			// Draw the moving background
+			bgLayer1.Draw(spriteBatch);
+			bgLayer2.Draw(spriteBatch);
+
 			// Draw the Player 
-			player.Draw(spriteBatch); 
+			player.Draw(spriteBatch);
 			// Stop drawing 
 			spriteBatch.End();
 
