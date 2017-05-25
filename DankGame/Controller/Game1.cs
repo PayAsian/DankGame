@@ -41,7 +41,7 @@ namespace DankGame.Controller
 
 		// Enemies
 		private Texture2D enemyTexture;
-		private List<Texture2D> enemies;
+		private List<Enemy> enemies;
 
 		// The rate at which the enemies appear
 		private TimeSpan enemySpawnTime;
@@ -68,7 +68,7 @@ namespace DankGame.Controller
 			Animation enemyAnimation = new Animation();
 
 			// Initialize the animation with the correct animation information
-			enemyAnimation.Initialize(enemyTexture, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
+			enemyAnimation.Initialize(enemyTexture, Vector2.Zero, 170, 170, 2, 125, Color.White, 1f, true);
 
 			// Randomly generate the position of the enemy
 			Vector2 position = new Vector2(GraphicsDevice.Viewport.Width + enemyTexture.Width / 2, random.Next(100, GraphicsDevice.Viewport.Height - 100));
@@ -153,7 +153,7 @@ namespace DankGame.Controller
 			playerMoveSpeed = 8.0f;
 
 			// Initialize the enemies list
-			enemies = new List<Enemy>(enemies);
+			enemies = new List<Enemy>();
 
 			// Set the time keepers to zero
 			previousSpawnTime = TimeSpan.Zero;
@@ -185,9 +185,11 @@ namespace DankGame.Controller
 			bgLayer1.Initialize(Content, "Texture/bgLayer1", GraphicsDevice.Viewport.Width, -1);
 			bgLayer2.Initialize(Content, "Texture/bgLayer2", GraphicsDevice.Viewport.Width, -2);
 
-			mainBackground = Content.Load<Texture2D>("Texture/BackGround Final");
-
 			enemyTexture = Content.Load<Texture2D>("Animation/Groot");
+
+			mainBackground = Content.Load<Texture2D>("Texture/CrossTheSpectrum");
+
+
 
 
 
@@ -239,25 +241,29 @@ namespace DankGame.Controller
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Draw(GameTime gameTime)
 		{
+			// Start drawing
+			spriteBatch.Begin();
 
-			// Draw the Enemies
-			for (int i = 0; i<enemies.Count; i++)
-			{
-				enemies[i].Draw(Enemy);
-			}
+
 
 			graphics.GraphicsDevice.Clear(Color.Teal);
 
 			//TODO: Add your drawing code here
 
-			// Start drawing
-			spriteBatch.Begin();
+			// Update the collision
+			UpdateCollision();
 
 			spriteBatch.Draw(mainBackground, Vector2.Zero, Color.White);
 
 			// Draw the moving background
 			bgLayer1.Draw(spriteBatch);
 			bgLayer2.Draw(spriteBatch);
+
+			// Draw the Enemies
+			for (int i = 0; i < enemies.Count; i++)
+			{
+				enemies[i].Draw(spriteBatch);
+			}
 
 
 			// Draw the Player 
@@ -266,6 +272,41 @@ namespace DankGame.Controller
 			spriteBatch.End();
 
 			base.Draw(gameTime);
+		}
+
+		private void UpdateCollision()
+		{
+			// Use the Rectangle's built-in intersect function to 
+			// determine if two objects are overlapping
+			Rectangle rectangle1;
+			Rectangle rectangle2;
+
+			// Only create the rectangle once for the player
+			rectangle1 = new Rectangle((int)player.Position.X, (int)player.Position.Y, player.Width, player.Height);
+
+			// Do the collision between the player and the enemies
+			for (int i = 0; i < enemies.Count; i++)
+			{
+				rectangle2 = new Rectangle((int)enemies[i].Position.X, (int)enemies[i].Position.Y, enemies[i].Width, enemies[i].Height);
+
+				// Determine if the two objects collided with each other
+				if (rectangle1.Intersects(rectangle2))
+				{
+					// Subtract the health from the player based on
+					// the enemy damage
+					player.Health -= enemies[i].Damage;
+
+					// Since the enemy collided with the player
+					// destroy it
+					enemies[i].Health = 0;
+
+					// If the player health is less than zero we died
+					if (player.Health <= 0)
+					{
+						player.Active = false;
+					}
+				}
+			}
 		}
 	}
 }

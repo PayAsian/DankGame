@@ -21,7 +21,7 @@ namespace DankGame
 		public void Initialize(ContentManager content, String texturePath, int screenWidth, int speed)
 		{
 			// Load the background texture we will be using
-			texture = content.Load<Texture2D>("Texture/BackGround Final");
+			texture = content.Load<Texture2D>("Texture/CrossTheSpectrum");
 
 			// Set the speed of the background
 			this.speed = speed;
