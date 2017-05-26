@@ -1,10 +1,8 @@
 ﻿<Properties StartupConfiguration="{479B81C7-93F3-4A31-A5CA-80E772F28CFF}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="DankGame/View/ParallaxingBackground.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="DankGame/Controller/Game1.cs">
     <Files>
-      <File FileName="DankGame/Controller/Game1.cs" Line="191" Column="4" />
-      <File FileName="DankGame/Model/Enemy.cs" Line="17" Column="35" />
-      <File FileName="DankGame/View/Animation.cs" Line="139" Column="1" />
-      <File FileName="DankGame/View/ParallaxingBackground.cs" Line="24" Column="54" />
+      <File FileName="DankGame/Controller/Game1.cs" Line="304" Column="25" />
+      <File FileName="DankGame/Model/Projectile.cs" Line="59" Column="9" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
