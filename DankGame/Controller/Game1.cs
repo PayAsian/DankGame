@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 using DankGame.View;
 using DankGame.Model;
@@ -60,6 +62,15 @@ namespace DankGame.Controller
 		private Texture2D explosionTexture;
 		private List<Animation> explosions;
 
+		// The sound that is played when a laser is fired
+		private SoundEffect laserSound;
+
+		// The sound used when the player or an enemy dies
+		private SoundEffect explosionSound;
+
+		// The music played during gameplay
+		private Song gameplayMusic;
+
 
 
 
@@ -95,7 +106,7 @@ namespace DankGame.Controller
 
 		private void UpdateEnemies(GameTime gameTime)
 		{
-			 
+
 			// Spawn a new enemy enemy every 1.5 seconds
 			if (gameTime.TotalGameTime - previousSpawnTime > enemySpawnTime)
 			{
@@ -113,13 +124,16 @@ namespace DankGame.Controller
 				if (enemies[i].Active == false)
 				{
 					if (enemies[i].Health <= 0)
-				{
-					// Add an explosion
-					AddExplosion(enemies[i].Position);
+					{
+						// Add an explosion
+						AddExplosion(enemies[i].Position);
 						enemies.RemoveAt(i);
-				}
+					}
 				}
 			}
+			// Play the explosion sound
+			explosionSound.Play();
+
 
 
 
@@ -163,6 +177,9 @@ namespace DankGame.Controller
 				// Add the projectile, but add it to the front and center of the player
 				AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
 			}
+			// Play the laser sound
+			laserSound.Play();
+
 		}
 
 		/// <summary>
@@ -214,6 +231,16 @@ namespace DankGame.Controller
 
 			// Load the player resources 
 			Vector2 playerPosition = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
+
+			// Load the music
+			gameplayMusic = Content.Load<Song>("Sound/gameMusic");
+
+			// Load the laser and explosion sound effect
+			laserSound = Content.Load<SoundEffect>("Sound/laserFire");
+			explosionSound = Content.Load<SoundEffect>("Sound/explosion");
+
+			// Start the music right away
+			PlayMusic(gameplayMusic);
 
 			player.Initialize(Content.Load<Texture2D>("Texture/Penguin"), playerPosition);
 
@@ -424,6 +451,22 @@ namespace DankGame.Controller
 				}
 			}
 		}
+
+		private void PlayMusic(Song song)
+		{
+			// Due to the way the MediaPlayer plays music,
+			// we have to catch the exception. Music will play when the game is not tethered
+			try
+			{
+				// Play the music
+				MediaPlayer.Play(song);
+
+				// Loop the currently playing song
+				MediaPlayer.IsRepeating = true;
+			}
+			catch { } //No Exception is handled so it is an empty/anonymous exception
+		}
+
 	}
 
 }
